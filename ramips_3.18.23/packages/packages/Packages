@@ -1,0 +1,157 @@
+Package: libwrap
+Version: 7.6-1
+Depends: libc
+Source: feeds/packages/libs/tcp_wrappers
+License: BSD
+Section: libs
+Maintainer: Peter Wagner <tripolar@gmx.at>
+Architecture: ramips_1004kc
+Installed-Size: 12011
+Filename: libwrap_7.6-1_ramips_1004kc.ipk
+Size: 12737
+MD5Sum: 49da7710a27954ebdb8787983404bf7b
+SHA256sum: 405fdb5119eac019e269d65e9c3d1ea449428f031282e89a039a76e913f5154a
+Description:  Security wrapper library for TCP services
+
+Package: nfs-kernel-server-utils
+Version: 1.3.3-1
+Depends: libc, nfs-kernel-server
+Source: feeds/packages/net/nfs-kernel-server
+Section: net
+Maintainer: Peter Wagner <tripolar@gmx.at>
+Architecture: ramips_1004kc
+Installed-Size: 14129
+Filename: nfs-kernel-server-utils_1.3.3-1_ramips_1004kc.ipk
+Size: 14805
+MD5Sum: 0d2ebe5a5515d856035e67caa55ad468
+SHA256sum: a46e05a614005aa7af4f00c0f784864bbabec713ad6d1569d219a1c68f76d9a0
+Description:  NFS server utils
+
+Package: nfs-kernel-server
+Version: 1.3.3-1
+Depends: libc, libwrap, libblkid, libuuid, librpc, kmod-fs-nfsd, kmod-fs-nfs, portmap
+Source: feeds/packages/net/nfs-kernel-server
+Section: net
+Maintainer: Peter Wagner <tripolar@gmx.at>
+Architecture: ramips_1004kc
+Installed-Size: 111440
+Filename: nfs-kernel-server_1.3.3-1_ramips_1004kc.ipk
+Size: 111734
+MD5Sum: 2c74b0899b4b03cd4f6a25307ef2fd89
+SHA256sum: 8918b96c1a107784001b99c6cd9a5d3f207f45cda27f25785a00901cbdcf8923
+Description:  Kernel NFS server support
+
+Package: openssh-keygen
+Version: 7.1p1-1
+Depends: libc, libopenssl, zlib
+Source: feeds/packages/net/openssh
+License: BSD ISC
+LicenseFiles: LICENCE
+Section: net
+Maintainer: Peter Wagner <tripolar@gmx.at>
+Architecture: ramips_1004kc
+Installed-Size: 180296
+Filename: openssh-keygen_7.1p1-1_ramips_1004kc.ipk
+Size: 180239
+MD5Sum: 47922e006429a1323852279568b3c327
+SHA256sum: 6c2ced67832899f4b895d253333522fe2727a4becd0c843ba2d0a06a8b5d8a48
+Description:  OpenSSH keygen.
+
+Package: openssh-server
+Version: 7.1p1-1
+Depends: libc, libopenssl, zlib, openssh-keygen
+Source: feeds/packages/net/openssh
+License: BSD ISC
+LicenseFiles: LICENCE
+Section: net
+Require-User: sshd=22:sshd=22
+Maintainer: Peter Wagner <tripolar@gmx.at>
+Architecture: ramips_1004kc
+Installed-Size: 323486
+Filename: openssh-server_7.1p1-1_ramips_1004kc.ipk
+Size: 323260
+MD5Sum: 965da564da40a9e3eaa39c2563517e12
+SHA256sum: 1226bc7919baa7f123e23d546586c201f55b489fdbaee98dd272191fa8cc4a99
+Description:  OpenSSH server.
+
+Package: openssh-sftp-server
+Version: 7.1p1-1
+Depends: libc
+Source: feeds/packages/net/openssh
+License: BSD ISC
+LicenseFiles: LICENCE
+Section: net
+Maintainer: Peter Wagner <tripolar@gmx.at>
+Architecture: ramips_1004kc
+Installed-Size: 34605
+Filename: openssh-sftp-server_7.1p1-1_ramips_1004kc.ipk
+Size: 35383
+MD5Sum: 174d9a7ed4b0bfff39b0c9971c23cb2d
+SHA256sum: ace97f3495f3e9c2cc3ca171f398f0b2d5975d070ed04977b1769bbd5370c8af
+Description:  OpenSSH SFTP server.
+
+Package: portmap
+Version: 6.0-4
+Depends: libc, libwrap, librpc
+Source: feeds/packages/net/portmap
+License: BSD-4c
+LicenseFiles: portmap.man
+Section: net
+Require-User: rpc=65533:rpc=65533
+Maintainer: Peter Wagner <tripolar@gmx.at>
+Architecture: ramips_1004kc
+Installed-Size: 7978
+Filename: portmap_6.0-4_ramips_1004kc.ipk
+Size: 8786
+MD5Sum: 6ff347613820b8811acef5a2f8fd283f
+SHA256sum: 8ce59de3a0ecbb447098d964af2478058fd67d16dde876c3fcbb16f1ea5f9019
+Description:  Portmap is a server that converts RPC (Remote Procedure Call) program
+ numbers into DARPA protocol port numbers.
+
+Package: transmission-daemon
+Version: 2.84-4
+Depends: libc, libcurl, libopenssl, libpthread, libevent2, librt
+Source: feeds/packages/net/transmission
+Section: net
+Require-User: transmission=224:transmission=224
+Maintainer: Cezary Jackiewicz <cezary@eko.one.pl>
+Architecture: ramips_1004kc
+Installed-Size: 207417
+Filename: transmission-daemon_2.84-4_ramips_1004kc.ipk
+Size: 207242
+MD5Sum: f17823b16a1016cae6bee4ad8825b9c7
+SHA256sum: f41bf8ac88ea70aa39c2cea4ce51bfb97efd7d0bec9caeb8a8141c965db94d1a
+Description:  Transmission is a simple BitTorrent client.
+ It features a very simple, intuitive interface
+ on top on an efficient, cross-platform back-end.
+ This package contains the daemon itself.
+
+Package: transmission-web
+Version: 2.84-4
+Depends: libc, transmission-daemon
+Source: feeds/packages/net/transmission
+Section: net
+Maintainer: Cezary Jackiewicz <cezary@eko.one.pl>
+Architecture: ramips_1004kc
+Installed-Size: 206992
+Filename: transmission-web_2.84-4_ramips_1004kc.ipk
+Size: 207855
+MD5Sum: 6a600f2c8f41b37d3ade42bffdc85679
+SHA256sum: f514fa10c6ee7aa0717a42bcd3518fb58ceb4bf6f8cc0e2e957aa3ef92385f1c
+Description:  Webinterface resources for transmission.
+
+Package: vsftpd
+Version: 3.0.3-1
+Depends: libc
+Source: feeds/packages/net/vsftpd
+License: GPLv2
+Section: net
+Maintainer: Cezary Jackiewicz <cezary@eko.one.pl>
+Architecture: ramips_1004kc
+Installed-Size: 45657
+Filename: vsftpd_3.0.3-1_ramips_1004kc.ipk
+Size: 46380
+MD5Sum: 6ae45a7f190d8ab0b3bcc97be137a6f9
+SHA256sum: c329f739d32ebfc82e748683acb38377a2b8ab13768ae2a9176ef687617d229a
+Description:  A fast and secure FTP server (no TLS)
+
