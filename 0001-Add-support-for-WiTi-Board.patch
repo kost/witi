@@ -1,0 +1,277 @@
+From c8325726fa4d1733156278dccb794b21c73b19b9 Mon Sep 17 00:00:00 2001
+From: Sebastian Careba <qshift@gmail.com>
+Date: Thu, 19 Nov 2015 13:09:04 +0200
+Subject: [PATCH] Add support for WiTi Board
+
+---
+ target/linux/generic/patches-3.18/999-flash.patch  |  12 ++
+ target/linux/ramips/base-files/etc/diag.sh         |   1 +
+ target/linux/ramips/base-files/lib/ramips.sh       |   3 +
+ .../ramips/base-files/lib/upgrade/platform.sh      |   1 +
+ target/linux/ramips/dts/WITI.dts                   | 143 +++++++++++++++++++++
+ target/linux/ramips/image/Makefile                 |   7 +-
+ target/linux/ramips/mt7621/profiles/witi.mk        |  20 +++
+ 7 files changed, 186 insertions(+), 1 deletion(-)
+ create mode 100644 target/linux/generic/patches-3.18/999-flash.patch
+ create mode 100644 target/linux/ramips/dts/WITI.dts
+ create mode 100644 target/linux/ramips/mt7621/profiles/witi.mk
+
+diff --git a/target/linux/generic/patches-3.18/999-flash.patch b/target/linux/generic/patches-3.18/999-flash.patch
+new file mode 100644
+index 0000000..b63295a
+--- /dev/null
++++ b/target/linux/generic/patches-3.18/999-flash.patch
+@@ -0,0 +1,12 @@
++Index: linux-3.18.23/drivers/mtd/spi-nor/spi-nor.c
++===================================================================
++--- linux-3.18.23.orig/drivers/mtd/spi-nor/spi-nor.c
+++++ linux-3.18.23/drivers/mtd/spi-nor/spi-nor.c
++@@ -510,6 +510,7 @@ static const struct spi_device_id spi_no
++ 	/* GigaDevice */
++ 	{ "gd25q32", INFO(0xc84016, 0, 64 * 1024,  64, SECT_4K) },
++ 	{ "gd25q64", INFO(0xc84017, 0, 64 * 1024, 128, SECT_4K) },
+++        { "gd25q128", INFO(0xc84018, 0, 64 * 1024, 256, SECT_4K) },
++ 
++ 	/* Intel/Numonyx -- xxxs33b */
++ 	{ "160s33b",  INFO(0x898911, 0, 64 * 1024,  32, 0) },
+diff --git a/target/linux/ramips/base-files/etc/diag.sh b/target/linux/ramips/base-files/etc/diag.sh
+index 3013d24..4c442ac 100644
+--- a/target/linux/ramips/base-files/etc/diag.sh
++++ b/target/linux/ramips/base-files/etc/diag.sh
+@@ -137,6 +137,7 @@ get_status_led() {
+ 		;;
+ 	pbr-m1|\
+ 	w306r-v20|\
++	witi|\
+ 	zbt-wr8305rt)
+ 		status_led="$board:green:sys"
+ 		;;
+diff --git a/target/linux/ramips/base-files/lib/ramips.sh b/target/linux/ramips/base-files/lib/ramips.sh
+index a1bcb72..ed11a9d 100755
+--- a/target/linux/ramips/base-files/lib/ramips.sh
++++ b/target/linux/ramips/base-files/lib/ramips.sh
+@@ -388,6 +388,9 @@ ramips_board_detect() {
+ 	*"WHR-G300N")
+ 		name="whr-g300n"
+ 		;;
++	*"witi")
++		name="witi"
++		;;
+ 	*"WIZARD 8800")
+ 		name="wizard8800"
+ 		;;
+diff --git a/target/linux/ramips/base-files/lib/upgrade/platform.sh b/target/linux/ramips/base-files/lib/upgrade/platform.sh
+index 0e8d619..d5ed836 100755
+--- a/target/linux/ramips/base-files/lib/upgrade/platform.sh
++++ b/target/linux/ramips/base-files/lib/upgrade/platform.sh
+@@ -112,6 +112,7 @@ platform_check_image() {
+ 	whr-300hp2|\
+ 	whr-600d|\
+ 	whr-g300n|\
++	witi|\
+ 	wizfi630a|\
+ 	wl-330n|\
+ 	wl-330n3g|\
+diff --git a/target/linux/ramips/dts/WITI.dts b/target/linux/ramips/dts/WITI.dts
+new file mode 100644
+index 0000000..d7658fa
+--- /dev/null
++++ b/target/linux/ramips/dts/WITI.dts
+@@ -0,0 +1,143 @@
++/dts-v1/;
++
++/include/ "mt7621.dtsi"
++
++/ {
++	compatible = "mediatek,mt7621-eval-board", "mediatek,mt7621-soc";
++	model = "Mqmaker WiTi";
++
++	memory@0 {
++		device_type = "memory";
++		reg = <0x0 0x10000000>;
++	};
++
++	chosen {
++		bootargs = "console=ttyS0,57600";
++	};
++
++	sdhci@10130000 {
++		status = "okay";
++	};
++
++	palmbus@1E000000 {
++		spi@b00 {
++			status = "okay";
++
++			m25p80@0 {
++				#address-cells = <1>;
++				#size-cells = <1>;
++				compatible = "w25q256";
++				reg = <0 0>;
++				linux,modalias = "m25p80";
++				spi-max-frequency = <10000000>;
++
++				partition@0 {
++					label = "u-boot";
++					reg = <0x0 0x30000>;
++					read-only;
++				};
++
++				partition@30000 {
++					label = "u-boot-env";
++					reg = <0x30000 0x10000>;
++					read-only;
++				};
++
++				factory: partition@40000 {
++					label = "factory";
++					reg = <0x40000 0x10000>;
++					read-only;
++				};
++
++				partition@50000 {
++					label = "firmware";
++					reg = <0x50000 0xfb0000>;
++				};
++
++			};
++		};
++
++		i2c@900 {
++			compatible = "ralink,i2c-mt7621";
++			reg = <0x900 0x100>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++			pinctrl-names = "default";
++			pinctrl-0 = <&i2c_pins>;
++			status = "okay";
++
++			pcf8563: rtc@51 {
++				status = "okay";
++				compatible = "nxp,pcf8563";
++				reg = <0x51>;
++			};
++		};
++	};
++
++	pcie@1e140000 {
++		status = "okay";
++
++		pcie0 {
++			mt76@0,0 {
++				reg = <0x0000 0 0 0 0>;
++				device_type = "pci";
++				mediatek,mtd-eeprom = <&factory 0x0000>;
++				mediatek,2ghz = <0>;
++			};
++		};
++
++		pcie1 {
++			mt76@1,0 {
++				reg = <0x0000 0 0 0 0>;
++				device_type = "pci";
++				mediatek,mtd-eeprom = <&factory 0x8000>;
++				mediatek,5ghz = <0>;
++			};
++		};
++	};
++
++	ethernet@1e100000 {
++		mtd-mac-address = <&factory 0xe000>;
++	};
++
++	gpio-leds {
++		compatible = "gpio-leds";
++
++		power {
++			label = "witi:green:power";
++			gpios = <&gpio0 25 1>;
++		};
++
++		sys {
++			label = "witi:green:sys";
++			gpios = <&gpio0 24 1>;
++		};
++
++		internet {
++			label = "witi:green:internet";
++			gpios = <&gpio0 23 1>;
++		};
++	};
++
++	gpio-keys-polled {
++		compatible = "gpio-keys-polled";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		poll-interval = <20>;
++
++		reset {
++			label = "reset";
++			gpios = <&gpio0 18 1>;
++			linux,code = <0x198>;
++		};
++	};
++
++	pinctrl {
++		state_default: pinctrl0 {
++			gpio {
++				ralink,group = "wdt", "rgmii2", "wdt rst", "jtag", "mdio";
++				ralink,function = "gpio";
++			};
++		};
++	};
++};
+diff --git a/target/linux/ramips/image/Makefile b/target/linux/ramips/image/Makefile
+index 5e19c3f..62b7c83 100644
+--- a/target/linux/ramips/image/Makefile
++++ b/target/linux/ramips/image/Makefile
+@@ -952,7 +952,7 @@ endif
+ #
+ 
+ ifeq ($(SUBTARGET),mt7621)
+-  TARGET_DEVICES += mt7621 wsr-600 wsr-1166 dir-860l-b1 firewrt pbr-m1 re6500 sap-g3200u3 zbt-wg2626
++  TARGET_DEVICES += mt7621 wsr-600 wsr-1166 dir-860l-b1 firewrt pbr-m1 re6500 sap-g3200u3 witi zbt-wg2626
+ endif
+ 
+ define Device/mt7621
+@@ -1002,6 +1002,11 @@ define Device/sap-g3200u3
+   DTS := SAP-G3200U3
+ endef
+ 
++define Device/witi
++  DTS := WITI
++  IMAGE_SIZE := $(ralink_default_fw_size_16M)
++endef
++
+ define Device/zbt-wg2626
+   DTS := ZBT-WG2626
+   IMAGE_SIZE := $(ralink_default_fw_size_16M)
+diff --git a/target/linux/ramips/mt7621/profiles/mqmaker.mk b/target/linux/ramips/mt7621/profiles/mqmaker.mk
+new file mode 100644
+index 0000000..dde84d6
+--- /dev/null
++++ b/target/linux/ramips/mt7621/profiles/mqmaker.mk
+@@ -0,0 +1,20 @@
++#
++# Copyright (C) 2015 OpenWrt.org
++#
++# This is free software, licensed under the GNU General Public License v2.
++# See /LICENSE for more information.
++#
++
++define Profile/Mqmaker
++	NAME:=Mqmaker
++	FEATURES+=rtc
++	PACKAGES:=\
++		kmod-usb-core kmod-usb3 kmod-usb-hid kmod-sdhci-mt7620 \
++		kmod-ledtrig-usbdev kmod-ata-core kmod-ata-ahci \
++		kmod-rtc-pcf8563
++endef
++
++define Profile/Mqmaker/Description
++	Default package set compatible with most boards.
++endef
++$(eval $(call Profile,Mqmaker))
+-- 
+2.1.4
+
