@@ -14,7 +14,7 @@ Subject: [PATCH] Add support for WiTi Board
  7 files changed, 186 insertions(+), 1 deletion(-)
  create mode 100644 target/linux/generic/patches-3.18/999-flash.patch
  create mode 100644 target/linux/ramips/dts/WITI.dts
- create mode 100644 target/linux/ramips/mt7621/profiles/witi.mk
+ create mode 100644 target/linux/ramips/mt7621/profiles/mqmaker.mk
 
 diff --git a/target/linux/generic/patches-3.18/999-flash.patch b/target/linux/generic/patches-3.18/999-flash.patch
 new file mode 100644
