@@ -10,7 +10,7 @@ Subject: [PATCH] Add support for WiTi Board
  .../ramips/base-files/lib/upgrade/platform.sh      |   1 +
  target/linux/ramips/dts/WITI.dts                   | 143 +++++++++++++++++++++
  target/linux/ramips/image/Makefile                 |   7 +-
- target/linux/ramips/mt7621/profiles/witi.mk        |  20 +++
+ target/linux/ramips/mt7621/profiles/mqmaker.mk        |  20 +++
  7 files changed, 186 insertions(+), 1 deletion(-)
  create mode 100644 target/linux/generic/patches-3.18/999-flash.patch
  create mode 100644 target/linux/ramips/dts/WITI.dts
